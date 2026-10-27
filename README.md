@@ -12,9 +12,11 @@
 
 ## 🎯 Descrição do Projeto
 
-Este projeto é o resultado do aprendizado nas aulas 1-9 de Programação Orientada a Objetos, onde desenvolvemos o sistema **FiapRide**, um aplicativo de mobilidade urbana com passageiros, veículos (carro, moto e carro elétrico) e viagens. Já o projeto pessoal  é um **sistema de controle de teares de uma tecelagem**.
+Este projeto é o resultado do aprendizado nas aulas 1-9 de Programação Orientada a Objetos, onde desenvolvemos o sistema **FiapRide**, um aplicativo de mobilidade urbana com passageiros, veículos (carro, moto e carro elétrico) e viagens.
 
-Cada aula corresponde a um commit, então o histórico do repositório mostra a evolução do código, desde a primeira classe com atributos públicos até as classes abstratas e interfaces.
+Também fiz um projeto pessoal: um **sistema para controlar os teares de uma tecelagem**. Escolhi esse tema porque tenho mais de dez anos de experiência na indústria têxtil.
+
+Cada aula tem o seu commit, então dá para ver no histórico como o código foi mudando, da primeira classe até as interfaces.
 
 ### Estrutura
 
@@ -36,7 +38,7 @@ java -cp bin br.com.fiapride.main.SistemaPrincipal
 java -cp bin br.com.fiapride.main.TesteMeuObjeto
 ```
 
-Cada `main` está dividido em métodos `demonstrar...()`, um por assunto, e os testes incluem entradas inválidas para mostrar as validações funcionando.
+Cada `main` tem um método `demonstrar...()` para cada assunto. Os testes também usam valores errados de propósito, para mostrar as validações funcionando.
 
 ---
 
@@ -89,7 +91,11 @@ Notação UML: `-` privado, `+` público, `#` protegido, *itálico* abstrato e <
 **Pense:** E se o FiapRide tiver 1 milhão de usuários? Como a Classe ajuda a resolver isso?
 
 **Sua Resposta:**
-Variáveis soltas funcionam para dois ou três passageiros, mas não escalam, porque com 1 milhão de usuários seriam 2 milhões de variáveis com nomes inventados à mão (`nomeAna`, `saldoAna`, `nomeCarlos`...), sem garantia de que todo passageiro tenha os mesmos dados e sem como percorrer todos eles em um laço. A classe `Passageiro` define a estrutura uma única vez, e cada `new Passageiro(...)` cria um objeto com o seu próprio estado, então o milionésimo passageiro custa uma linha de código, e não duas variáveis novas. A classe também é o lugar das regras (Aula 2) e da proteção dos dados (Aula 3), o que variáveis soltas nunca oferecem. No meu projeto pessoal o raciocínio é o mesmo, porque uma tecelagem tem dezenas de teares com a mesma estrutura (código, modelo, velocidade e produção) e valores diferentes, que é exatamente a diferença entre classe e objeto. Apliquei também a abstração da aula e deixei de fora dados que existem na máquina, mas que o controle de produção não usa, como a cor da pintura ou o fabricante do motor.
+Com variáveis soltas, cada passageiro novo precisa de duas variáveis novas (`nomeAna`, `saldoAna`, `nomeCarlos`...). Com 1 milhão de usuários, seriam 2 milhões de variáveis escritas à mão. Isso é impossível de manter, e não dá para percorrer todos os passageiros em um laço.
+
+A classe resolve isso. Eu escrevo a estrutura uma vez só (nome e saldo) e crio quantos passageiros quiser com `new Passageiro(...)`. Cada objeto guarda os seus próprios valores. É na classe também que ficam as regras e a proteção dos dados, que vimos nas aulas seguintes.
+
+No meu projeto pessoal é igual. A fábrica tem vários teares com os mesmos dados (código, modelo, velocidade e produção), só que com valores diferentes. Também deixei de fora o que o controle de produção não usa, como a cor da máquina.
 
 ---
 
@@ -98,7 +104,11 @@ Variáveis soltas funcionam para dois ou três passageiros, mas não escalam, po
 **Pergunta:** Se nós podemos simplesmente fazer `passageiro.saldo = passageiro.saldo + 100` diretamente no código principal, por que dá tanto trabalho criar um método específico chamado `adicionarSaldo(valor)` para fazer isso? Quais seriam os riscos para a nossa startup de mobilidade se deixássemos qualquer programador alterar o saldo diretamente?
 
 **Sua Resposta:**
-O método concentra a regra em um único lugar. Com o acesso direto, cada programador precisaria lembrar de validar o valor em todos os pontos do sistema que mexem no saldo, e basta um esquecimento para que `passageiro.saldo = passageiro.saldo + (-500)` passe sem ninguém perceber. Para uma startup de mobilidade os riscos são financeiros e de confiança, como saldo negativo, crédito criado do nada, corrida cobrada de quem não tinha saldo e nenhuma pista de onde o erro aconteceu. No meu código, `pagarViagem()` consulta `temSaldoSuficiente()` antes de descontar, então a regra "só paga quem tem saldo" é escrita uma vez e reaproveitada, inclusive pela classe `Viagem` na Aula 5. No `Tear` acontece o mesmo, porque `ajustarVelocidade()` impede que alguém coloque a máquina a 5000 rpm, o que no chão de fábrica significa quebra de peça e de fio, e `registrarProducao()` recusa produção negativa, que distorceria o controle de eficiência.
+Porque o método deixa a regra em um lugar só. Dentro de `adicionarSaldo()` eu verifico se o valor é maior que zero. Se qualquer um pudesse mexer no saldo direto, cada programador teria que lembrar dessa verificação, e um único esquecimento já deixaria passar algo como `saldo = saldo + (-500)`.
+
+Para a empresa, os riscos seriam saldo negativo, crédito aparecendo do nada e corrida cobrada de quem não tinha dinheiro. E ninguém saberia em que parte do código o erro aconteceu.
+
+No meu código, `pagarViagem()` usa `temSaldoSuficiente()` antes de descontar. No tear, `ajustarVelocidade()` não deixa a máquina passar de 1200 rpm, e `registrarProducao()` não aceita produção negativa.
 
 ---
 
@@ -109,7 +119,11 @@ O método concentra a regra em um único lugar. Com o acesso direto, cada progra
 Pense bem: Qual a diferença entre dar a alguém uma CÓPIA de um documento seu, e entregar o documento ORIGINAL para a pessoa rasurar?
 
 **Sua Resposta:**
-O getter entrega uma cópia do valor. Quem chama `getSaldo()` recebe o número e pode usá-lo como quiser, mas nada do que fizer com essa cópia chega ao objeto. O atributo público é o documento original, que qualquer parte do sistema pode rasurar sem passar por regra nenhuma. Com `private`, o único caminho para mudar o saldo são os métodos que validam (`adicionarSaldo()` e `pagarViagem()`), e eu fui um passo além deixando o próprio `setSaldo()` privado, porque dinheiro não deve ser "editado", e sim recarregado ou gasto. No `Tear`, `setVelocidadeRpm()` e `setMetrosProduzidos()` também são privados, então a produção só cresce por `registrarProducao()`, como o contador de uma máquina real, que o operador não zera nem altera à mão. A linha `tear1.metrosProduzidos = -50.0;` deixou de compilar, e o próprio compilador passou a defender a regra. Para atributos que são objetos, como em `getSolicitante()`, o getter devolve a referência, e não uma cópia, mas o objeto devolvido continua protegido pelos próprios métodos dele.
+O getter entrega só uma cópia do valor. Quem chama `getSaldo()` consegue ler o saldo, mas não consegue mudar o saldo de verdade. Já o atributo público é o documento original, que qualquer parte do código pode alterar sem passar por nenhuma regra.
+
+Com o atributo `private`, o saldo só muda pelos métodos que validam, que são `adicionarSaldo()` e `pagarViagem()`. Também deixei o `setSaldo()` privado, porque dinheiro não deve ser editado, só recarregado ou gasto.
+
+No tear fiz o mesmo com a produção. Ela só aumenta por `registrarProducao()`, como o contador de uma máquina de verdade. Se alguém escrever `tear1.metrosProduzidos = -50.0;`, o código nem compila.
 
 ---
 
@@ -125,7 +139,11 @@ Pensando no mundo real e no Clean Code: Por que é um erro gravíssimo clicar em
 _Dica: Pense sobre o que pode ou não mudar fisicamente em um carro, e a diferença entre "alterar um dado no banco" e "executar um processo real no Detran"_
 
 **Sua Resposta:**
-Gerar getters e setters para tudo abre portas que não deveriam existir. Um `setModelo()` transformaria um Corolla em Fusca com uma linha de código, e um `setPlaca()` público permitiria trocar a placa sem processo nenhum, o que abre espaço para fraude, como esconder um veículo multado atrás de outra placa. As duas decisões seguem o mundo real. O modelo é definido na fábrica e nunca muda, então entra pelo construtor e não tem setter. A placa pode mudar, mas só por um processo oficial, então o setter é privado e o caminho público é `atualizarPlaca()`, que representa a solicitação ao Detran e é o lugar certo para validações e, no futuro, para registro e auditoria. É a diferença entre alterar um dado no banco e executar um processo de negócio. No projeto pessoal repeti o padrão, porque o modelo de um tear não muda e não tem `setModelo()`, enquanto o código de patrimônio só muda por `recadastrarCodigo()`. Nesta aula também criei construtores encadeados com `this()`, como `new Tear("TEAR-02", "Rapier 220")`, que delega para o construtor completo com a velocidade padrão, e um construtor padrão `Tear()` que também delegava para os outros, para que mesmo sem argumentos o objeto nascesse válido.
+Porque nem todo dado pode mudar. Se a IDE gerar um `setModelo()`, alguém consegue transformar um Corolla em Fusca com uma linha de código. Isso não acontece no mundo real, então o modelo entra pelo construtor e não tem setter.
+
+A placa pode mudar, mas só por um processo oficial no Detran. Por isso o `setPlaca()` é privado e o caminho público é `atualizarPlaca()`. Assim ninguém troca a placa sem passar pelo processo, o que evita fraudes como esconder um carro multado com outra placa. Mudar um dado no banco é diferente de fazer um processo real.
+
+No meu projeto usei a mesma ideia. O modelo do tear não muda, e o código de patrimônio só muda por `recadastrarCodigo()`. Nessa aula também criei construtores que chamam outros construtores com `this()`, para que todo tear já nasça com dados válidos.
 
 ---
 
@@ -136,7 +154,11 @@ Gerar getters e setters para tudo abre portas que não deveriam existir. Um `set
 _Pense nas regras de negócio: O que acontece na hora que a Viagem acaba e o sistema precisa descontar o saldo? Se a Viagem tiver apenas a String "Ana Silva", ela consegue mexer no dinheiro dela?_
 
 **Sua Resposta:**
-Não seria mais fácil, porque a viagem não serve só para imprimir. Com a String "Ana Silva", a viagem não teria como descontar o saldo, consultar se a Ana pode pagar nem saber o saldo atual, porque um texto não tem comportamento. Guardando o objeto `Passageiro`, a `Viagem` chama `solicitante.temSaldoSuficiente()` e `solicitante.pagarViagem()` no método `finalizar()`, que foi o que implementei. Também não é mais pesado, porque a viagem guarda só uma referência para o objeto, e não uma cópia dele. Essa referência traz outra vantagem, que testei no `main`, já que a Ana recarrega depois de a viagem ser criada e `viagemDaAna.getSolicitante().getSaldo()` já mostra o valor novo, sem cópias desatualizadas. No projeto pessoal, a `OrdemDeProducao` guarda o objeto `Tear` pelo mesmo motivo, porque ao executar a ordem ela registra a produção no contador da própria máquina, e o `main` enxerga a mudança no mesmo objeto.
+Não. A viagem não serve só para imprimir o nome. No fim da corrida ela precisa cobrar o passageiro, e com a String "Ana Silva" ela não consegue, porque um texto não tem saldo nem métodos.
+
+Guardando o objeto `Passageiro`, a viagem pode chamar `temSaldoSuficiente()` e `pagarViagem()`. Foi o que fiz no método `finalizar()`. Também não fica mais pesado, porque a viagem guarda só uma referência para o objeto, e não uma cópia dele.
+
+Testei isso no main. A Ana recarregou depois de a viagem ser criada, e a viagem já mostrou o saldo novo. No meu projeto, a `OrdemDeProducao` guarda o objeto `Tear` pelo mesmo motivo, para registrar a produção direto na máquina.
 
 ---
 
@@ -147,7 +169,11 @@ Não seria mais fácil, porque a viagem não serve só para imprimir. Com a Stri
 Por que o Java não deixa a filha alterar as variáveis privadas da mãe diretamente? Qual o princípio das aulas passadas que isso está protegendo?"
 
 **Sua Resposta:**
-O Java protege o encapsulamento das Aulas 3 e 4. A validação da placa está no `setPlaca()` privado da mãe, e se a filha pudesse escrever `this.placa = "ABC"`, toda classe que estendesse `Veiculo` teria uma porta lateral para pular essa regra, e o encapsulamento valeria só para quem não usa herança. Com `private`, a filha é obrigada a passar pelo `super(placa, modelo)`, e quem valida é a mãe, em um único lugar. Isso também mantém a mãe livre para mudar a forma de guardar os dados sem quebrar as filhas. No meu projeto, `TearJatoDeAr` chama `super(codigo, modelo, VELOCIDADE_INICIAL_RPM)`, e quem garante que a velocidade está na faixa segura é o `Tear`. Usei `protected` em um único ponto, o método `estimarMetrosPorHora()`, que as filhas precisam para calcular a produção, mas que não faz sentido para o resto do sistema.
+Para proteger o encapsulamento, que vimos nas Aulas 3 e 4. A regra que valida a placa fica no `setPlaca()` da mãe. Se a filha pudesse fazer `this.placa = "ABC"`, ela pularia essa regra, e qualquer classe que herdasse de `Veiculo` poderia burlar a validação.
+
+Por isso a filha usa `super(placa, modelo)`. Quem valida continua sendo a mãe, em um lugar só.
+
+No meu projeto, o `TearJatoDeAr` chama `super(...)`, e quem confere se a velocidade está na faixa segura é o `Tear`. Só usei `protected` em um método que as filhas precisam para calcular a produção.
 
 ---
 
@@ -156,7 +182,11 @@ O Java protege o encapsulamento das Aulas 3 e 4. A validação da placa está no
 **Pergunta:** "No nosso loop `for (Veiculo veiculo : frota)`, a variável `veiculo` é do tipo genérico `Veiculo`. Se esquecêssemos de criar o método `calcularAutonomia()` lá na classe mãe `Veiculo`, nós conseguiríamos chamá-lo dentro do loop, mesmo sabendo que ele existe dentro do `Carro` e da `Moto`? Por que o contrato precisa existir na base da hierarquia?"
 
 **Sua Resposta:**
-Não conseguiríamos. O compilador decide quais métodos podem ser chamados pelo tipo da variável, e não pelo objeto guardado nela, então se `Veiculo` não tiver `calcularAutonomia()` a chamada não compila, mesmo que todos os objetos da lista sejam carros e motos. Só na execução o Java olha o objeto real e escolhe a versão sobrescrita. O contrato precisa existir na base para garantir ao compilador que todo `Veiculo` responde a essa mensagem, deixando para cada filha a decisão de como responder. Sem ele, a saída seria testar o tipo com `instanceof` e fazer cast dentro do laço, que é justamente o "if para descobrir o tipo" que a aula condena, porque cada tipo novo obrigaria a mexer no laço. No projeto pessoal, a `List<Tear>` chama `calcularProducaoPorHora()` sem saber se a máquina é a jato de ar (92% de eficiência) ou de pinças (85%), e um terceiro tipo de tear entraria no relatório sem mudar uma linha do laço.
+Não. O Java só deixa chamar métodos que existem no tipo da variável. Como a variável é do tipo `Veiculo`, se a mãe não tiver `calcularAutonomia()`, o código não compila, mesmo que todos na lista sejam carros e motos.
+
+Quando o método existe na mãe, o compilador sabe que todo veículo tem essa resposta. Na hora de rodar, o Java vê se o objeto é um `Carro` ou uma `Moto` e usa a versão certa. Sem isso, eu teria que usar vários `if` para descobrir o tipo de cada veículo, que é o que a aula manda evitar.
+
+No meu projeto, a lista de teares chama `calcularProducaoPorHora()` e cada tear responde com a sua conta, com 92% de eficiência no jato de ar e 85% nas pinças.
 
 ---
 
@@ -169,7 +199,11 @@ Por que, então, no código, precisamos EXPLICITAMENTE dizer ao Java que `Veicul
 Pense: Se esquecermos de colocar `abstract`, qual o risco que corremos? Alguém pode criar `new Veiculo()` e quebrar a lógica do nosso sistema?"
 
 **Sua Resposta:**
-Não faz sentido, assim como na fábrica não existe "tear genérico", só teares a jato de ar, de pinças e assim por diante. O Java não deduz isso porque, para o compilador, uma classe concreta com construtor público é uma permissão para instanciar, e ele não conhece o mundo real. Declarar `abstract` é uma decisão de projeto que só quem modela o domínio pode tomar. O risco apareceu no meu próprio código, porque na Aula 7 a frota tinha um `new Veiculo("GEN-0000", "Veículo genérico")` que respondia "Autonomia não definida", e o parque de teares tinha um `new Tear()` que respondia "Produção não definida", objetos sem sentido que entram em relatórios e cálculos. Quando tornei as duas classes abstratas, o compilador apontou cada lugar que criava esses objetos, e precisei trocá-los por `Carro` e `TearJatoDeAr`. Aproveitei para mudar duas coisas no `Tear`. O construtor padrão `Tear()` saiu, porque não existe mais tear sem tipo para criar, e `calcularProducaoPorHora()` virou abstrato, porque a resposta genérica da mãe nunca mais seria usada.
+Não faz sentido. Ninguém compra um "veículo" sem tipo, assim como na fábrica não existe um "tear genérico".
+
+O Java não sabe disso sozinho. Para ele, uma classe normal pode ser criada com `new`. Quem conhece o negócio é o programador, então somos nós que precisamos avisar com `abstract`.
+
+Vi esse risco no meu próprio código. Na Aula 7, a lista tinha um `new Veiculo(...)` que respondia "Autonomia não definida" e um `new Tear()` que respondia "Produção não definida". Esses objetos não existem na vida real, mas apareciam nos relatórios. Quando coloquei `abstract`, o compilador mostrou todos esses lugares, e eu troquei por `Carro` e `TearJatoDeAr`. Também tirei o construtor `Tear()`, que não fazia mais sentido.
 
 ---
 
@@ -182,7 +216,11 @@ Pense: Se `CarroEletrico` pudesse herdar de `Veiculo` E de `Bateria` ao mesmo te
 Como as interfaces resolvem esse problema?"
 
 **Sua Resposta:**
-Herança múltipla de classes cria ambiguidade. Se `CarroEletrico` herdasse de `Veiculo` e de `Bateria` e as duas tivessem `ligar()` com códigos diferentes, o Java não saberia qual executar, que é o chamado problema do diamante. As interfaces resolvem isso porque definem só a assinatura, sem implementação, então mesmo que duas interfaces exijam `ligar()`, a classe escreve uma única versão que atende aos dois contratos. Nos métodos `default` (do Java 8 em diante), que têm corpo, o compilador obriga a classe a resolver o conflito de forma explícita, então a ambiguidade continua impossível. Assim a classe herda código de uma só mãe e pode assinar quantos contratos precisar. No FiapRide, `CarroEletrico` É UM `Veiculo` e também É `Recarregavel`, e o `Celular`, que não é veículo, entra no mesmo laço de recarga. No meu projeto criei a interface `Manutenivel`, com a constante `INTERVALO_MANUTENCAO_HORAS = 2000`, e com ela os teares e o compressor de ar, que não é tear, entram no mesmo plano de manutenção preventiva. Sem a interface, a única forma de tratá-los juntos seria inventar uma mãe comum artificial.
+Porque herdar de duas classes pode gerar conflito. Se `Veiculo` e `Bateria` tivessem um método `ligar()`, cada uma com um código diferente, o Java não saberia qual usar. Esse é o problema do diamante.
+
+A interface, do jeito que vimos na aula, só diz quais métodos a classe precisa ter, sem o código deles. Se duas interfaces pedirem `ligar()`, a classe escreve um `ligar()` só e atende as duas.
+
+No FiapRide, o `CarroEletrico` é um `Veiculo` e também é `Recarregavel`, e o `Celular`, que não é veículo, também é `Recarregavel`. No meu projeto criei a interface `Manutenivel`, com a constante de 2000 horas entre manutenções. Assim os teares e o compressor de ar entram no mesmo plano de manutenção, mesmo sendo de tipos diferentes.
 
 ---
 
@@ -191,33 +229,43 @@ Herança múltipla de classes cria ambiguidade. Se `CarroEletrico` herdasse de `
 ### Desafio Pessoal (Seu Projeto)
 
 **Qual foi o domínio que você escolheu para seu projeto pessoal?**
-Controle de teares de uma tecelagem. Escolhi esse domínio porque tenho mais de dez anos de experiência na indústria têxtil, com operações e controle de produção, e conheço as regras reais das máquinas (faixa de velocidade, eficiência por tipo de tear, ordens de produção e manutenção preventiva).
+Controle de teares de uma tecelagem. Escolhi esse tema porque tenho mais de dez anos de experiência na indústria têxtil e conheço como as máquinas funcionam na prática.
 
 **Quais classes você criou?**
-- `Tear` (classe abstrata): código, modelo, velocidade em rpm, metros produzidos e horas de uso. Implementa `Manutenivel`.
-- `TearJatoDeAr` e `TearDePinca` (filhas de `Tear`): pressão do ar e quantidade de cores, cada uma com sua eficiência no cálculo da produção.
-- `OrdemDeProducao`: associação com `Tear` (TEM UM), registra a produção na própria máquina e não pode ser executada duas vezes.
-- `Manutenivel` (interface): contrato de manutenção preventiva com a constante `INTERVALO_MANUTENCAO_HORAS`.
-- `Compressor`: não é tear, mas implementa `Manutenivel`.
-- `TesteMeuObjeto`: classe de testes, com um método por aula.
+- `Tear` (classe abstrata): código, modelo, velocidade, metros produzidos e horas de uso.
+- `TearJatoDeAr` e `TearDePinca`: filhas de `Tear`, cada uma com a sua eficiência.
+- `OrdemDeProducao`: tem um `Tear` e registra a produção nele. Não pode ser executada duas vezes.
+- `Manutenivel` (interface): define a manutenção a cada 2000 horas de uso.
+- `Compressor`: não é um tear, mas também precisa de manutenção, então implementa `Manutenivel`.
+- `TesteMeuObjeto`: classe de testes, com um método para cada aula.
 
 **Qual foi o maior desafio técnico que você enfrentou?**
-O maior desafio foi transformar o `Tear` em classe mãe e depois em classe abstrata sem perder o que já funcionava. Até a Aula 5 o `Tear` era uma classe concreta usada em todo o código, inclusive na `OrdemDeProducao`, e tinha um construtor padrão `Tear()` que eu tinha criado na Aula 4. Na Aula 6 ele virou a mãe de `TearJatoDeAr` e `TearDePinca`, e o primeiro cuidado foi não duplicar regras, então as filhas chamam `super()` e quem valida código, modelo e velocidade continua sendo só o `Tear`. A `OrdemDeProducao` não precisou mudar, porque já recebia um `Tear`, e passou a aceitar qualquer tipo de máquina, o que mostrou na prática a vantagem de depender da mãe. Na Aula 7 precisei de uma conta de produção diferente para cada tipo de tear, e para não repetir a fórmula nas filhas criei o método `protected estimarMetrosPorHora(eficiencia)` na mãe, deixando para cada filha apenas a sua eficiência. Na Aula 8, ao declarar `Tear` como `abstract`, o compilador acusou todos os `new Tear(...)` dos testes, e tive que decidir o que fazer com o construtor padrão e com a resposta genérica de `calcularProducaoPorHora()`. Removi o construtor e tornei o método abstrato, porque os dois só existiam para um "tear genérico" que não existe na fábrica. Um limite que ficou claro nesse processo é que as validações só imprimem uma mensagem, então um `TearJatoDeAr` criado com pressão de 15 bar continua existindo com pressão zero. A solução correta é lançar exceções, conteúdo previsto para o próximo semestre.
+O mais difícil foi transformar o `Tear` em classe mãe e depois em classe abstrata sem quebrar o que já funcionava.
+
+Até a Aula 5, o `Tear` era uma classe normal, usada em vários lugares, inclusive na `OrdemDeProducao`. Na Aula 6 ele virou mãe do `TearJatoDeAr` e do `TearDePinca`. Tomei cuidado para não repetir regras. As filhas chamam `super()`, e quem valida tudo continua sendo o `Tear`. A `OrdemDeProducao` não precisou mudar, porque já recebia um `Tear` e passou a aceitar qualquer tipo.
+
+Na Aula 7, cada tipo de tear precisava de uma conta de produção diferente. Para não repetir a fórmula, criei um método na mãe, e cada filha só informa a sua eficiência.
+
+Na Aula 8, quando o `Tear` virou abstrato, o compilador apontou todos os lugares que usavam `new Tear()`. Corrigi esses testes e tirei o construtor `Tear()`.
+
+Também percebi um limite. Quando um dado é inválido, o programa só mostra uma mensagem, mas o objeto é criado mesmo assim. Um tear com pressão de 15 bar, por exemplo, fica com pressão zero. O certo seria usar exceções, que vamos ver no próximo semestre.
 
 ---
 
 ## 🎓 Conclusão
 
 **O que você aprendeu nestas 9 aulas?**
-Aprendi a pensar o software como objetos que guardam dados e protegem as próprias regras, e não como uma lista de instruções no `main`. A evolução fica clara no histórico de commits, porque o projeto começou com atributos públicos que qualquer linha podia alterar, passou a ter métodos com validação, atributos privados e construtores que impedem objetos incompletos, e terminou com associação, herança, polimorfismo, classes abstratas e interfaces, em que adicionar um tipo novo de veículo ou de tear não exige mudar o código que já existe. Também aprendi as ferramentas do dia a dia, como Git com chave SSH, VS Code no Ubuntu (WSL) e diagramas UML no Astah. Modelar os teares mostrou que orientação a objetos se parece muito com o trabalho de controle de produção que eu já fazia, em que é preciso definir o que cada máquina é, o que ela faz e quais regras ninguém pode pular.
+Aprendi a organizar o programa em objetos, cada um com seus dados e suas regras, em vez de colocar tudo no main. Dá para ver a evolução nos commits. Comecei com atributos públicos que qualquer um podia mudar. Depois vieram os métodos com validação, os atributos privados e os construtores. No fim usei herança, polimorfismo, classe abstrata e interface. Com isso, para criar um tipo novo de veículo ou de tear, não preciso mexer no código que já existe.
+
+Também aprendi a usar o Git com chave SSH, o VS Code no Ubuntu e o Astah. E percebi que modelar os teares é parecido com o que eu já fazia no controle de produção, que é definir o que cada máquina é, o que ela faz e quais regras não podem ser quebradas.
 
 **Qual conceito foi mais difícil de entender?**
-A associação e a forma de representá-la no diagrama. No código a ideia de "TEM UM" foi tranquila, mas no Astah, durante o Check Point 2, confundi o nome da associação com o papel (role) que fica na ponta da linha e coloquei `pacoteTransportado` no lugar errado, além de deixar os construtores com `: void`. Superei comparando o diagrama com o código linha a linha, até entender que o papel na ponta da linha corresponde ao atributo privado da classe, como `- solicitante` na `Viagem`. A diferença entre "É UM" (herança) e "TEM UM" (associação) também exigiu atenção, e o teste da frase em português foi o que mais me ajudou a decidir.
+A associação, principalmente no diagrama. No código foi tranquilo entender que uma classe "tem" outra. Mas no Astah, no Check Point 2, confundi o nome da associação com o papel que fica na ponta da linha, e também deixei os construtores com `: void`. Resolvi comparando o diagrama com o código, linha por linha, até entender que o papel na ponta da linha é o atributo da classe, como o `- solicitante` da `Viagem`. Também precisei de atenção para separar "é um" (herança) de "tem um" (associação). Montar a frase em português foi o que mais ajudou.
 
 **O que você melhoraria no seu projeto se pudesse refazer?**
-- **Exceções no lugar de mensagens:** hoje um objeto com dado inválido nasce mesmo assim, com valores zerados (por exemplo, um carro com capacidade inválida fica com 0 lugares). Com `throw new IllegalArgumentException(...)` no construtor, o objeto inválido nem chegaria a existir.
-- **Combustível fora de `Veiculo`:** o `CarroEletrico` herda `abastecer()`, o que não faz sentido. Eu moveria o tanque para uma interface `Abastecivel`, implementada só por `Carro` e `Moto`.
-- **Código repetido entre `Tear` e `Compressor`:** o controle de horas de uso está nas duas classes. Uma classe abstrata `Equipamento` acima delas eliminaria a repetição.
-- **`calcularAutonomia()` abstrato:** fiz isso com `calcularProducaoPorHora()` no `Tear` e faria o mesmo no `Veiculo`, já que nenhum veículo concreto usa a resposta genérica.
-- **Dinheiro em `BigDecimal`:** `double` acumula erros de arredondamento em valores monetários.
-- **Testes automatizados com JUnit** no lugar de testes visuais com `System.out.println` no `main`.
+- **Usar exceções.** Hoje um objeto com dado errado é criado mesmo assim, com valor zerado. Com exceção, ele nem seria criado.
+- **Tirar o combustível de `Veiculo`.** O `CarroEletrico` herda `abastecer()`, o que não faz sentido para um carro elétrico.
+- **Juntar o código repetido entre `Tear` e `Compressor`.** Os dois controlam as horas de uso do mesmo jeito. Uma classe mãe `Equipamento` resolveria.
+- **Deixar `calcularAutonomia()` abstrato no `Veiculo`**, como fiz com `calcularProducaoPorHora()` no `Tear`.
+- **Usar `BigDecimal` para dinheiro**, porque `double` erra nos arredondamentos.
+- **Criar testes automáticos com JUnit**, em vez de conferir tudo com `System.out.println`.
