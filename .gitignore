@@ -1,0 +1,12 @@
+*.class
+bin/
+out/
+target/
+.vscode/
+.idea/
+*.iml
+.metadata/
+.settings/
+.classpath
+.project
+*.asta.lock
