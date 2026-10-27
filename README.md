@@ -229,7 +229,7 @@ No FiapRide, o `CarroEletrico` é um `Veiculo` e também é `Recarregavel`, e o 
 ### Desafio Pessoal (Seu Projeto)
 
 **Qual foi o domínio que você escolheu para seu projeto pessoal?**
-Controle de teares de uma tecelagem. Escolhi esse tema porque tenho mais de dez anos de experiência na indústria têxtil e conheço como as máquinas funcionam na prática.
+Controle de teares de uma tecelagem. Escolhi esse tema porque trabalhei um bom tempo na área.
 
 **Quais classes você criou?**
 - `Tear` (classe abstrata): código, modelo, velocidade, metros produzidos e horas de uso.
@@ -257,10 +257,9 @@ Também percebi um limite. Quando um dado é inválido, o programa só mostra um
 **O que você aprendeu nestas 9 aulas?**
 Aprendi a organizar o programa em objetos, cada um com seus dados e suas regras, em vez de colocar tudo no main. Dá para ver a evolução nos commits. Comecei com atributos públicos que qualquer um podia mudar. Depois vieram os métodos com validação, os atributos privados e os construtores. No fim usei herança, polimorfismo, classe abstrata e interface. Com isso, para criar um tipo novo de veículo ou de tear, não preciso mexer no código que já existe.
 
-Também aprendi a usar o Git com chave SSH, o VS Code no Ubuntu e o Astah. E percebi que modelar os teares é parecido com o que eu já fazia no controle de produção, que é definir o que cada máquina é, o que ela faz e quais regras não podem ser quebradas.
 
 **Qual conceito foi mais difícil de entender?**
-A associação, principalmente no diagrama. No código foi tranquilo entender que uma classe "tem" outra. Mas no Astah, no Check Point 2, confundi o nome da associação com o papel que fica na ponta da linha, e também deixei os construtores com `: void`. Resolvi comparando o diagrama com o código, linha por linha, até entender que o papel na ponta da linha é o atributo da classe, como o `- solicitante` da `Viagem`. Também precisei de atenção para separar "é um" (herança) de "tem um" (associação). Montar a frase em português foi o que mais ajudou.
+A associação, principalmente no diagrama. No código foi mais fácil entender que uma classe "tem" outra. Mas no Astah, no Check Point 2, confundi o nome da associação com o papel que fica na ponta da linha, e também deixei os construtores com `: void`. Resolvi comparando o diagrama com o código, linha por linha, até entender que o papel na ponta da linha é o atributo da classe, como o `- solicitante` da `Viagem`. Também precisei de atenção para separar "é um" (herança) de "tem um" (associação). Montar a frase em português foi o que mais ajudou.
 
 **O que você melhoraria no seu projeto se pudesse refazer?**
 - **Usar exceções.** Hoje um objeto com dado errado é criado mesmo assim, com valor zerado. Com exceção, ele nem seria criado.
