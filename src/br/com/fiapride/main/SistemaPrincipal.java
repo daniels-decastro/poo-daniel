@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.fiapride.model.Carro;
+import br.com.fiapride.model.CarroEletrico;
+import br.com.fiapride.model.Celular;
 import br.com.fiapride.model.Moto;
 import br.com.fiapride.model.Passageiro;
+import br.com.fiapride.model.Recarregavel;
 import br.com.fiapride.model.Veiculo;
 import br.com.fiapride.model.Viagem;
 
@@ -18,6 +21,7 @@ public class SistemaPrincipal {
         demonstrarHeranca();
         demonstrarPolimorfismo();
         demonstrarClasseAbstrata();
+        demonstrarInterface();
     }
 
     /** Aulas 1 a 4: objetos, métodos com validação, encapsulamento e construtores. */
@@ -138,5 +142,33 @@ public class SistemaPrincipal {
         for (Veiculo veiculo : frota) {
             veiculo.exibirTipo();   // método abstrato: toda filha concreta é obrigada a implementar
         }
+    }
+
+    /** Aula 9: CarroEletrico e Celular são de famílias diferentes, mas assinam o mesmo contrato Recarregavel. */
+    private static void demonstrarInterface() {
+        System.out.println();
+        System.out.println("=== FIAPRIDE: Interfaces ===");
+
+        CarroEletrico tesla = new CarroEletrico("TES-9999", "Tesla Model 3");
+        Celular celularDoMotorista = new Celular("iPhone 15");
+
+        // Polimorfismo de interface: os dois são tratados como Recarregavel.
+        Recarregavel[] recarregaveis = { tesla, celularDoMotorista };
+        System.out.println("Recarregando tudo para 85% (carga máxima permitida: " + Recarregavel.CARGA_MAXIMA + "%)");
+        for (Recarregavel recarregavel : recarregaveis) {
+            recarregavel.recarregar(85);    // mesmo método, comportamentos diferentes
+        }
+        tesla.recarregar(150);              // recusado: acima de CARGA_MAXIMA
+
+        System.out.println();
+        System.out.println("Tesla é um Veiculo? " + (tesla instanceof Veiculo));
+        System.out.println("Tesla é Recarregavel? " + (tesla instanceof Recarregavel));
+        System.out.println("Celular é um Veiculo? " + Veiculo.class.isInstance(celularDoMotorista));
+        System.out.println("Celular é Recarregavel? " + (celularDoMotorista instanceof Recarregavel));
+
+        System.out.println();
+        tesla.exibirTipo();
+        System.out.println(tesla.calcularAutonomia());
+        System.out.println("Bateria do celular: " + celularDoMotorista.getNivelBateria() + "%");
     }
 }

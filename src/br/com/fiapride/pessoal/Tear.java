@@ -5,8 +5,9 @@ package br.com.fiapride.pessoal;
  * Atributos privados: velocidade e produção só mudam pelos métodos de operação.
  * Construtores: todo tear nasce com código, modelo e uma velocidade válida.
  * Abstrata: na fábrica não existe "tear genérico", só teares a jato de ar, de pinças etc.
+ * Manutenivel: todo tear assina o contrato de manutenção preventiva, e as filhas herdam esse contrato.
  */
-public abstract class Tear {
+public abstract class Tear implements Manutenivel {
 
     // Faixa segura de operação. Constantes evitam "números mágicos" espalhados pelo código.
     private static final int VELOCIDADE_MINIMA_RPM = 100;
@@ -21,6 +22,7 @@ public abstract class Tear {
     private String modelo;
     private int velocidadeRpm;          // batidas (inserções de trama) por minuto
     private double metrosProduzidos;
+    private int horasDesdeUltimaManutencao;
 
     // O construtor padrão Tear() existiu até a Aula 7. Com a classe abstrata ele perdeu o sentido:
     // um "tear sem tipo" não pode mais ser criado, então foi removido.
@@ -73,6 +75,27 @@ public abstract class Tear {
         return this.metrosProduzidos >= metaEmMetros;
     }
 
+    public void registrarHorasDeUso(int horas) {
+        if (horas <= 0) {
+            System.out.println("Erro: as horas de uso devem ser maiores que zero.");
+            return;
+        }
+        this.horasDesdeUltimaManutencao = this.horasDesdeUltimaManutencao + horas;
+    }
+
+    /** Implementação do contrato Manutenivel, usando a constante definida na interface. */
+    @Override
+    public boolean precisaDeManutencao() {
+        return this.horasDesdeUltimaManutencao >= Manutenivel.INTERVALO_MANUTENCAO_HORAS;
+    }
+
+    @Override
+    public void realizarManutencao() {
+        System.out.println("Manutenção do " + this.codigo + ": revisão do batente, troca de peças de desgaste e lubrificação ("
+                + this.horasDesdeUltimaManutencao + " h de uso).");
+        this.horasDesdeUltimaManutencao = 0;
+    }
+
     /**
      * Contrato da produção. Era um método com resposta genérica até a Aula 7. Com a classe abstrata,
      * essa resposta nunca seria usada, então virou abstrato: cada tipo de tear é obrigado a calcular
@@ -102,6 +125,10 @@ public abstract class Tear {
 
     public double getMetrosProduzidos() {
         return this.metrosProduzidos;
+    }
+
+    public int getHorasDesdeUltimaManutencao() {
+        return this.horasDesdeUltimaManutencao;
     }
 
     // Não existe setModelo(): o modelo de uma máquina não muda depois de fabricada.

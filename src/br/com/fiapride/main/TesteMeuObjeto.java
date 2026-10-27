@@ -3,6 +3,8 @@ package br.com.fiapride.main;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.fiapride.pessoal.Compressor;
+import br.com.fiapride.pessoal.Manutenivel;
 import br.com.fiapride.pessoal.OrdemDeProducao;
 import br.com.fiapride.pessoal.Tear;
 import br.com.fiapride.pessoal.TearDePinca;
@@ -17,6 +19,7 @@ public class TesteMeuObjeto {
         demonstrarHeranca();
         demonstrarPolimorfismo();
         demonstrarClasseAbstrata();
+        demonstrarInterface();
     }
 
     /**
@@ -119,6 +122,36 @@ public class TesteMeuObjeto {
         for (Tear tear : parqueDeTeares) {
             tear.exibirTipoDeInsercao();
         }
+    }
+
+    /** Aula 9: teares e compressor são de famílias diferentes, mas assinam o mesmo contrato Manutenivel. */
+    private static void demonstrarInterface() {
+        System.out.println();
+        System.out.println("=== TECELAGEM: Plano de Manutenção Preventiva (Interface) ===");
+        System.out.println("Intervalo de manutenção: " + Manutenivel.INTERVALO_MANUTENCAO_HORAS + " h");
+
+        TearJatoDeAr jato = new TearJatoDeAr("TEAR-10", "AirMax 500", 6.0);
+        TearDePinca pinca = new TearDePinca("TEAR-20", "Rapier 220", 8);
+        Compressor compressor = new Compressor("COMP-01", 75);
+
+        jato.registrarHorasDeUso(2150);
+        pinca.registrarHorasDeUso(1200);
+        compressor.registrarHorasDeUso(2400);
+
+        Manutenivel[] equipamentos = { jato, pinca, compressor };
+        for (Manutenivel equipamento : equipamentos) {
+            if (equipamento.precisaDeManutencao()) {
+                equipamento.realizarManutencao();
+            } else {
+                System.out.println("Equipamento em dia: ainda não atingiu o intervalo de manutenção.");
+            }
+        }
+
+        System.out.println();
+        System.out.println("TEAR-10 é um Tear? " + (jato instanceof Tear));
+        System.out.println("TEAR-10 é Manutenivel? " + (jato instanceof Manutenivel));
+        System.out.println("COMP-01 é um Tear? " + Tear.class.isInstance(compressor));
+        System.out.println("COMP-01 é Manutenivel? " + (compressor instanceof Manutenivel));
     }
 
     private static void imprimirTear(Tear tear) {
