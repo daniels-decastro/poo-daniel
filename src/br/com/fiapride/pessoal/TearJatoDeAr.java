@@ -18,6 +18,11 @@ public class TearJatoDeAr extends Tear {
         this.setPressaoDoArEmBar(pressaoDoArEmBar);
     }
 
+    @Override
+    public void exibirTipoDeInsercao() {
+        System.out.println(this.getCodigo() + ": inserção da trama por jato de ar comprimido.");
+    }
+
     /** O jato de ar para pouco: eficiência típica de 92% do tempo produzindo. */
     @Override
     public String calcularProducaoPorHora() {

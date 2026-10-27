@@ -17,6 +17,11 @@ public class TearDePinca extends Tear {
         this.setQuantidadeDeCores(quantidadeDeCores);
     }
 
+    @Override
+    public void exibirTipoDeInsercao() {
+        System.out.println(this.getCodigo() + ": inserção da trama por pinças mecânicas.");
+    }
+
     /** As pinças param mais para troca de cor e de fio: eficiência típica de 85%. */
     @Override
     public String calcularProducaoPorHora() {

@@ -17,6 +17,7 @@ public class SistemaPrincipal {
         demonstrarViagem();
         demonstrarHeranca();
         demonstrarPolimorfismo();
+        demonstrarClasseAbstrata();
     }
 
     /** Aulas 1 a 4: objetos, métodos com validação, encapsulamento e construtores. */
@@ -40,13 +41,16 @@ public class SistemaPrincipal {
         System.out.println(carlos.getNome() + " | Saldo: R$ " + carlos.getSaldo());
     }
 
-    /** Aula 4: o veículo nasce válido, o modelo é imutável e a placa muda só por processo. */
+    /**
+     * Aula 4: o veículo nasce válido, o modelo é imutável e a placa muda só por processo.
+     * Desde a Aula 8 o Veiculo é abstrato, então o teste usa um Carro.
+     */
     private static void demonstrarVeiculos() {
         System.out.println();
         System.out.println("=== FIAPRIDE: Veículos ===");
 
-        Veiculo corolla = new Veiculo("ABC-1234", "Toyota Corolla");
-        // Veiculo semDados = new Veiculo();        // não compila: The constructor Veiculo() is undefined
+        Carro corolla = new Carro("ABC-1234", "Toyota Corolla", 4);
+        // Carro semDados = new Carro();            // não compila: The constructor Carro() is undefined
         // corolla.setModelo("Fusca");              // não compila: o método não existe
 
         corolla.atualizarPlaca("BRA2E19");
@@ -61,7 +65,7 @@ public class SistemaPrincipal {
         System.out.println("=== FIAPRIDE: Viagens ===");
 
         Passageiro ana = new Passageiro("Ana Silva", 20.0);
-        Veiculo corolla = new Veiculo("ABC-1234", "Toyota Corolla");
+        Veiculo corolla = new Carro("ABC-1234", "Toyota Corolla", 4);
 
         Viagem viagemDaAna = new Viagem("Av. Paulista", ana, corolla);
 
@@ -106,12 +110,33 @@ public class SistemaPrincipal {
         List<Veiculo> frota = new ArrayList<>();   // lista da mãe: aceita qualquer filha
         frota.add(new Carro("CAR-1234", "Honda Civic", 4));
         frota.add(new Moto("MOT-5678", "Honda CG 160", false));
-        frota.add(new Veiculo("GEN-0000", "Veículo genérico"));   // ainda é possível... até a Aula 8
+        // frota.add(new Veiculo("GEN-0000", "Genérico"));  // desde a Aula 8 não compila: Veiculo is abstract
 
         for (Veiculo veiculo : frota) {
             veiculo.abastecer(50.0);
             // Sem if para descobrir o tipo: cada objeto responde do seu jeito.
             System.out.println(veiculo.getModelo() + " -> " + veiculo.calcularAutonomia());
+        }
+    }
+
+    /** Aula 8: Veiculo é abstrato. Não existe "veículo genérico", só carros e motos de verdade. */
+    private static void demonstrarClasseAbstrata() {
+        System.out.println();
+        System.out.println("=== FIAPRIDE: Classe Abstrata ===");
+
+        // Veiculo generico = new Veiculo("ABC-1234", "Genérico");
+        // ERRO de compilação: Veiculo is abstract; cannot be instantiated
+
+        Veiculo taxi = new Carro("ABC-1234", "Chevrolet Onix", 4);
+        Veiculo mototaxi = new Moto("MOT-9999", "Honda Biz", false);
+
+        System.out.println("Identificação dos veículos:");
+        taxi.exibirTipo();
+        mototaxi.exibirTipo();
+
+        Veiculo[] frota = { taxi, mototaxi, new Carro("CAR-3333", "Honda Civic", 5) };
+        for (Veiculo veiculo : frota) {
+            veiculo.exibirTipo();   // método abstrato: toda filha concreta é obrigada a implementar
         }
     }
 }

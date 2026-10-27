@@ -4,15 +4,14 @@ package br.com.fiapride.pessoal;
  * Tear: máquina da tecelagem que cruza os fios de trama com os fios de urdume.
  * Atributos privados: velocidade e produção só mudam pelos métodos de operação.
  * Construtores: todo tear nasce com código, modelo e uma velocidade válida.
+ * Abstrata: na fábrica não existe "tear genérico", só teares a jato de ar, de pinças etc.
  */
-public class Tear {
+public abstract class Tear {
 
     // Faixa segura de operação. Constantes evitam "números mágicos" espalhados pelo código.
     private static final int VELOCIDADE_MINIMA_RPM = 100;
     private static final int VELOCIDADE_MAXIMA_RPM = 1200;
     private static final int VELOCIDADE_PADRAO_RPM = 450;
-    private static final String CODIGO_PROVISORIO = "TEAR-PROVISORIO";
-    private static final String MODELO_PADRAO_DA_FABRICA = "AirMax 500";
 
     // Tecido de referência para estimar produção: 20 batidas por centímetro = 2000 por metro.
     private static final int BATIDAS_POR_METRO = 2000;
@@ -23,16 +22,10 @@ public class Tear {
     private int velocidadeRpm;          // batidas (inserções de trama) por minuto
     private double metrosProduzidos;
 
-    /**
-     * Construtor padrão: usado quando a máquina chega à fábrica e ainda não recebeu
-     * código de patrimônio. Ele delega para o construtor completo com this(),
-     * então mesmo sem argumentos o objeto nasce válido, e não com campos nulos.
-     */
-    public Tear() {
-        this(CODIGO_PROVISORIO, MODELO_PADRAO_DA_FABRICA);
-    }
+    // O construtor padrão Tear() existiu até a Aula 7. Com a classe abstrata ele perdeu o sentido:
+    // um "tear sem tipo" não pode mais ser criado, então foi removido.
 
-    /** Cadastro comum: o tear começa na velocidade padrão. */
+    /** Cadastro comum: o tear começa na velocidade padrão. Chamado pelas filhas via super(). */
     public Tear(String codigo, String modelo) {
         this(codigo, modelo, VELOCIDADE_PADRAO_RPM);
     }
@@ -81,12 +74,14 @@ public class Tear {
     }
 
     /**
-     * Resposta genérica. Cada tipo de tear sobrescreve este método com a sua eficiência real,
-     * porque o jato de ar e as pinças param por motivos diferentes.
+     * Contrato da produção. Era um método com resposta genérica até a Aula 7. Com a classe abstrata,
+     * essa resposta nunca seria usada, então virou abstrato: cada tipo de tear é obrigado a calcular
+     * a produção com a sua eficiência real.
      */
-    public String calcularProducaoPorHora() {
-        return "Produção não definida para um tear genérico.";
-    }
+    public abstract String calcularProducaoPorHora();
+
+    /** Cada tipo de tear é obrigado a informar como a trama atravessa o tecido. */
+    public abstract void exibirTipoDeInsercao();
 
     /** Converte a velocidade em metros por hora. Protegido: só as filhas usam, no cálculo da produção. */
     protected double estimarMetrosPorHora(double eficiencia) {

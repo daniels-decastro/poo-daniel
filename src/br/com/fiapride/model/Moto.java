@@ -12,6 +12,11 @@ public class Moto extends Veiculo {
         this.eletrica = eletrica;
     }
 
+    @Override
+    public void exibirTipo() {
+        System.out.println("Sou uma Moto (" + this.getModelo() + ")");
+    }
+
     /** A moto é mais leve e faz 35 km por litro. */
     @Override
     public String calcularAutonomia() {

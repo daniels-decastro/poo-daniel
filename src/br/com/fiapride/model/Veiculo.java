@@ -2,14 +2,16 @@ package br.com.fiapride.model;
 
 /**
  * Veículo da frota do FiapRide.
- * O construtor obriga todo veículo a nascer com placa e modelo.
+ * Abstrata: não existe "veículo genérico" no mundo real, só carros e motos.
+ * Ela é o molde que guarda o que é comum a todos e não pode ser instanciada com new.
  */
-public class Veiculo {
+public abstract class Veiculo {
 
     private String placa;
     private String modelo;
     private double nivelCombustivelEmLitros;
 
+    /** Classe abstrata também tem construtor: ele é chamado pelas filhas via super(). */
     public Veiculo(String placa, String modelo) {
         this.setPlaca(placa);
         this.modelo = modelo;
@@ -48,6 +50,12 @@ public class Veiculo {
     public String calcularAutonomia() {
         return "Autonomia não definida para um veículo genérico.";
     }
+
+    /**
+     * Método abstrato: não tem corpo. Cada filha concreta é obrigada a dizer que tipo de veículo ela é,
+     * e o compilador recusa uma filha que esqueça de implementar.
+     */
+    public abstract void exibirTipo();
 
     // Não existe setModelo(): um carro não muda de modelo depois de fabricado.
 

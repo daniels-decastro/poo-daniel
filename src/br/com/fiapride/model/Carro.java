@@ -13,6 +13,11 @@ public class Carro extends Veiculo {
         this.setCapacidadePassageiros(capacidadePassageiros);
     }
 
+    @Override
+    public void exibirTipo() {
+        System.out.println("Sou um Carro (" + this.getModelo() + ")");
+    }
+
     /** O carro faz 10 km por litro. */
     @Override
     public String calcularAutonomia() {

@@ -16,32 +16,33 @@ public class TesteMeuObjeto {
         demonstrarOrdensDeProducao();
         demonstrarHeranca();
         demonstrarPolimorfismo();
+        demonstrarClasseAbstrata();
     }
 
-    /** Aulas 1 a 4: objetos, métodos com validação, encapsulamento e construtores. */
+    /**
+     * Aulas 1 a 4: objetos, métodos com validação, encapsulamento e construtores.
+     * Desde a Aula 8 o Tear é abstrato, então os testes usam os tipos concretos.
+     */
     private static void demonstrarTeares() {
         System.out.println("=== TECELAGEM: Cadastro e Operação dos Teares ===");
 
-        Tear tearNovo = new Tear();                                // construtor padrão
-        Tear tear1 = new Tear("TEAR-01", "AirMax 500", 800);       // construtor completo
-        Tear tear2 = new Tear("TEAR-02", "Rapier 220");            // this(): velocidade padrão
-        Tear tearInvalido = new Tear("TEAR-99", "AirMax 500", 5000);   // recusado: velocidade fora da faixa
+        Tear tear1 = new TearJatoDeAr("TEAR-01", "AirMax 500", 6.0);
+        Tear tear2 = new TearDePinca("TEAR-02", "Rapier 220", 4);
 
         // tear1.setModelo("Outro");                // não compila: o método não existe
         // tear1.metrosProduzidos = -50.0;          // não compila: o atributo é privado
 
-        tearNovo.recadastrarCodigo("TEAR-03");
-        tearNovo.recadastrarCodigo("");             // recusado: código vazio
+        tear2.recadastrarCodigo("TEAR-03");
+        tear2.recadastrarCodigo("");                // recusado: código vazio
 
         tear1.ajustarVelocidade(900);
+        tear1.ajustarVelocidade(5000);              // recusado: acima da faixa segura
         tear1.registrarProducao(120.5);
         tear1.registrarProducao(-10.0);             // recusado: produção negativa
         System.out.println("TEAR-01 atingiu a meta de 100 m? " + tear1.atingiuMeta(100.0));
 
         imprimirTear(tear1);
         imprimirTear(tear2);
-        imprimirTear(tearNovo);
-        imprimirTear(tearInvalido);
     }
 
     /** Aula 5: a ordem de produção TEM UM tear e registra a produção na própria máquina. */
@@ -49,7 +50,7 @@ public class TesteMeuObjeto {
         System.out.println();
         System.out.println("=== TECELAGEM: Ordens de Produção ===");
 
-        Tear tear1 = new Tear("TEAR-01", "AirMax 500", 800);
+        Tear tear1 = new TearJatoDeAr("TEAR-01", "AirMax 500", 6.0);
         OrdemDeProducao ordem = new OrdemDeProducao("OP-1001", 250.0, tear1);
 
         ordem.exibirResumo();
@@ -93,12 +94,30 @@ public class TesteMeuObjeto {
         List<Tear> parqueDeTeares = new ArrayList<>();   // lista da mãe: aceita qualquer filha
         parqueDeTeares.add(new TearJatoDeAr("TEAR-10", "AirMax 500", 6.0));
         parqueDeTeares.add(new TearDePinca("TEAR-20", "Rapier 220", 8));
-        parqueDeTeares.add(new Tear());   // tear genérico: ainda é possível... até a Aula 8
+        // parqueDeTeares.add(new Tear());   // desde a Aula 8 não compila: Tear is abstract
 
         for (Tear tear : parqueDeTeares) {
             // Sem if para descobrir o tipo: cada objeto responde do seu jeito.
             System.out.println(tear.getCodigo() + " (" + tear.getVelocidadeRpm() + " rpm) -> "
                     + tear.calcularProducaoPorHora());
+        }
+    }
+
+    /** Aula 8: Tear é abstrato. Toda filha é obrigada a implementar os métodos abstratos. */
+    private static void demonstrarClasseAbstrata() {
+        System.out.println();
+        System.out.println("=== TECELAGEM: Classe Abstrata ===");
+
+        // Tear generico = new Tear("TEAR-00", "Genérico");
+        // ERRO de compilação: Tear is abstract; cannot be instantiated
+
+        Tear[] parqueDeTeares = {
+            new TearJatoDeAr("TEAR-10", "AirMax 500", 6.0),
+            new TearDePinca("TEAR-20", "Rapier 220", 8),
+            new TearJatoDeAr("TEAR-12", "AirMax 700", 5.5)
+        };
+        for (Tear tear : parqueDeTeares) {
+            tear.exibirTipoDeInsercao();
         }
     }
 
