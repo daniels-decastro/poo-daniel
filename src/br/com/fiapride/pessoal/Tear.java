@@ -14,6 +14,10 @@ public class Tear {
     private static final String CODIGO_PROVISORIO = "TEAR-PROVISORIO";
     private static final String MODELO_PADRAO_DA_FABRICA = "AirMax 500";
 
+    // Tecido de referência para estimar produção: 20 batidas por centímetro = 2000 por metro.
+    private static final int BATIDAS_POR_METRO = 2000;
+    private static final int MINUTOS_POR_HORA = 60;
+
     private String codigo;
     private String modelo;
     private int velocidadeRpm;          // batidas (inserções de trama) por minuto
@@ -74,6 +78,19 @@ public class Tear {
             return false;
         }
         return this.metrosProduzidos >= metaEmMetros;
+    }
+
+    /**
+     * Resposta genérica. Cada tipo de tear sobrescreve este método com a sua eficiência real,
+     * porque o jato de ar e as pinças param por motivos diferentes.
+     */
+    public String calcularProducaoPorHora() {
+        return "Produção não definida para um tear genérico.";
+    }
+
+    /** Converte a velocidade em metros por hora. Protegido: só as filhas usam, no cálculo da produção. */
+    protected double estimarMetrosPorHora(double eficiencia) {
+        return this.velocidadeRpm * MINUTOS_POR_HORA * eficiencia / BATIDAS_POR_METRO;
     }
 
     public String getCodigo() {

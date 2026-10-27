@@ -4,12 +4,20 @@ package br.com.fiapride.model;
 public class Carro extends Veiculo {
 
     private static final int CAPACIDADE_MAXIMA = 7;
+    private static final double KM_POR_LITRO = 10.0;
 
     private int capacidadePassageiros;
 
     public Carro(String placa, String modelo, int capacidadePassageiros) {
         super(placa, modelo);   // a mãe valida a placa: a filha não mexe nos atributos privados dela
         this.setCapacidadePassageiros(capacidadePassageiros);
+    }
+
+    /** O carro faz 10 km por litro. */
+    @Override
+    public String calcularAutonomia() {
+        double kmRestantes = this.getNivelCombustivelEmLitros() * KM_POR_LITRO;
+        return "Autonomia: " + kmRestantes + " km (consumo de " + KM_POR_LITRO + " km/l).";
     }
 
     public int getCapacidadePassageiros() {

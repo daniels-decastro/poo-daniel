@@ -1,5 +1,8 @@
 package br.com.fiapride.main;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import br.com.fiapride.pessoal.OrdemDeProducao;
 import br.com.fiapride.pessoal.Tear;
 import br.com.fiapride.pessoal.TearDePinca;
@@ -12,6 +15,7 @@ public class TesteMeuObjeto {
         demonstrarTeares();
         demonstrarOrdensDeProducao();
         demonstrarHeranca();
+        demonstrarPolimorfismo();
     }
 
     /** Aulas 1 a 4: objetos, métodos com validação, encapsulamento e construtores. */
@@ -79,6 +83,23 @@ public class TesteMeuObjeto {
         // A ordem pede um Tear, então aceita qualquer tipo de tear sem mudar a classe OrdemDeProducao.
         new OrdemDeProducao("OP-2001", 180.0, jato).executar();
         new OrdemDeProducao("OP-2002", 95.0, pinca).executar();
+    }
+
+    /** Aula 7: o mesmo comando, calcularProducaoPorHora(), dá respostas diferentes para cada tipo. */
+    private static void demonstrarPolimorfismo() {
+        System.out.println();
+        System.out.println("=== TECELAGEM: Produção Estimada do Parque de Teares (Polimorfismo) ===");
+
+        List<Tear> parqueDeTeares = new ArrayList<>();   // lista da mãe: aceita qualquer filha
+        parqueDeTeares.add(new TearJatoDeAr("TEAR-10", "AirMax 500", 6.0));
+        parqueDeTeares.add(new TearDePinca("TEAR-20", "Rapier 220", 8));
+        parqueDeTeares.add(new Tear());   // tear genérico: ainda é possível... até a Aula 8
+
+        for (Tear tear : parqueDeTeares) {
+            // Sem if para descobrir o tipo: cada objeto responde do seu jeito.
+            System.out.println(tear.getCodigo() + " (" + tear.getVelocidadeRpm() + " rpm) -> "
+                    + tear.calcularProducaoPorHora());
+        }
     }
 
     private static void imprimirTear(Tear tear) {

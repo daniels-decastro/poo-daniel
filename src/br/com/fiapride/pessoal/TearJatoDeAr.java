@@ -9,12 +9,21 @@ public class TearJatoDeAr extends Tear {
     private static final int VELOCIDADE_INICIAL_RPM = 800;
     private static final double PRESSAO_MINIMA_BAR = 2.0;
     private static final double PRESSAO_MAXIMA_BAR = 8.0;
+    private static final double EFICIENCIA = 0.92;
 
     private double pressaoDoArEmBar;
 
     public TearJatoDeAr(String codigo, String modelo, double pressaoDoArEmBar) {
         super(codigo, modelo, VELOCIDADE_INICIAL_RPM);   // a mãe valida código, modelo e velocidade
         this.setPressaoDoArEmBar(pressaoDoArEmBar);
+    }
+
+    /** O jato de ar para pouco: eficiência típica de 92% do tempo produzindo. */
+    @Override
+    public String calcularProducaoPorHora() {
+        double metrosPorHora = this.estimarMetrosPorHora(EFICIENCIA);
+        return String.format("Produção estimada: %.1f m/h (jato de ar, eficiência de %.0f%%).",
+                metrosPorHora, EFICIENCIA * 100);
     }
 
     public double getPressaoDoArEmBar() {
