@@ -14,8 +14,7 @@
 
 Este projeto é o resultado do aprendizado nas aulas 1-9 de Programação Orientada a Objetos, onde desenvolvemos o sistema **FiapRide**, um aplicativo de mobilidade urbana com passageiros, veículos (carro, moto e carro elétrico) e viagens.
 
-Também fiz um projeto pessoal: um **sistema para controlar os teares de uma tecelagem**. Escolhi esse tema porque tenho mais de dez anos de experiência na indústria têxtil.
-
+Também fiz um projeto pessoal: um **sistema para controlar os teares de uma tecelagem**.
 Cada aula tem o seu commit, então dá para ver no histórico como o código foi mudando, da primeira classe até as interfaces.
 
 ### Estrutura
