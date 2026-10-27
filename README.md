@@ -12,7 +12,7 @@
 
 ## 🎯 Descrição do Projeto
 
-Este projeto é o resultado do aprendizado nas aulas 1-9 de Programação Orientada a Objetos, onde desenvolvemos o sistema **FiapRide**, um aplicativo de mobilidade urbana com passageiros, veículos (carro, moto e carro elétrico) e viagens. Em paralelo, desenvolvi como projeto pessoal um **sistema de controle de teares de uma tecelagem**, área da indústria têxtil em que tenho mais de dez anos de experiência em operações e controle de produção.
+Este projeto é o resultado do aprendizado nas aulas 1-9 de Programação Orientada a Objetos, onde desenvolvemos o sistema **FiapRide**, um aplicativo de mobilidade urbana com passageiros, veículos (carro, moto e carro elétrico) e viagens. Já o projeto pessoal  é um **sistema de controle de teares de uma tecelagem**.
 
 Cada aula corresponde a um commit, então o histórico do repositório mostra a evolução do código, desde a primeira classe com atributos públicos até as classes abstratas e interfaces.
 
