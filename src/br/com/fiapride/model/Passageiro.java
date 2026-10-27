@@ -2,12 +2,12 @@ package br.com.fiapride.model;
 
 /**
  * Passageiro do FiapRide.
- * Os métodos concentram as regras do saldo em um só lugar.
+ * Atributos privados: ninguém de fora altera o saldo sem passar pelas regras.
  */
 public class Passageiro {
 
-    public String nome;
-    public double saldo;
+    private String nome;
+    private double saldo;
 
     /** Recarrega créditos. Valor zero ou negativo não é recarga. */
     public void adicionarSaldo(double valor) {
@@ -15,7 +15,7 @@ public class Passageiro {
             System.out.println("Erro: o valor da recarga deve ser maior que zero.");
             return;
         }
-        this.saldo = this.saldo + valor;
+        this.setSaldo(this.saldo + valor);
         System.out.println("Recarga de R$ " + valor + " para " + this.nome + ". Saldo atual: R$ " + this.saldo);
     }
 
@@ -34,7 +34,33 @@ public class Passageiro {
             System.out.println("Erro: " + this.nome + " não tem saldo para pagar R$ " + custo + ".");
             return;
         }
-        this.saldo = this.saldo - custo;
+        this.setSaldo(this.saldo - custo);
         System.out.println("Viagem paga por " + this.nome + ". Saldo restante: R$ " + this.saldo);
+    }
+
+    public String getNome() {
+        return this.nome;
+    }
+
+    public double getSaldo() {
+        return this.saldo;
+    }
+
+    /** Público por enquanto: é a única forma de registrar o nome enquanto não existe construtor. */
+    public void setNome(String nome) {
+        if (nome == null || nome.trim().isEmpty()) {
+            System.out.println("Erro de validação: o nome do passageiro não pode ser vazio.");
+            return;
+        }
+        this.nome = nome;
+    }
+
+    /** Privado: dinheiro só entra por adicionarSaldo() e só sai por pagarViagem(). */
+    private void setSaldo(double saldo) {
+        if (saldo < 0) {
+            System.out.println("Erro de segurança: saldo negativo bloqueado.");
+            return;
+        }
+        this.saldo = saldo;
     }
 }
