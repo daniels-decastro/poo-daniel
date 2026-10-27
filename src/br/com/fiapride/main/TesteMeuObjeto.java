@@ -6,21 +6,19 @@ import br.com.fiapride.pessoal.Tear;
 public class TesteMeuObjeto {
 
     public static void main(String[] args) {
-        System.out.println("=== TECELAGEM: Cadastro de Teares ===");
+        System.out.println("=== TECELAGEM: Operação dos Teares ===");
 
         Tear tear1 = new Tear();
         tear1.codigo = "TEAR-01";
         tear1.modelo = "AirMax 500";
-        tear1.velocidadeRpm = 800;
-        tear1.metrosProduzidos = 0.0;
 
-        Tear tear2 = new Tear();
-        tear2.codigo = "TEAR-02";
-        tear2.modelo = "Rapier 220";
-        tear2.velocidadeRpm = 450;
-        tear2.metrosProduzidos = 0.0;
+        tear1.ajustarVelocidade(800);
+        tear1.ajustarVelocidade(5000);   // recusado: acima da faixa segura
 
-        System.out.println(tear1.codigo + " | Modelo: " + tear1.modelo + " | " + tear1.velocidadeRpm + " rpm");
-        System.out.println(tear2.codigo + " | Modelo: " + tear2.modelo + " | " + tear2.velocidadeRpm + " rpm");
+        tear1.registrarProducao(120.5);
+        tear1.registrarProducao(-10.0);  // recusado: produção negativa
+
+        System.out.println("TEAR-01 atingiu a meta de 100 m? " + tear1.atingiuMeta(100.0));
+        System.out.println("TEAR-01 atingiu a meta de 200 m? " + tear1.atingiuMeta(200.0));
     }
 }
