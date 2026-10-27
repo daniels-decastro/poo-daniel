@@ -47,7 +47,7 @@ public class Tear {
 
     /** Recadastro de patrimônio: troca o código da máquina, como a troca de placa no Detran. */
     public void recadastrarCodigo(String novoCodigo) {
-        System.out.println("Recadastrando " + this.codigo + " no patrimônio como " + novoCodigo + "...");
+        System.out.println("Recadastrando " + this.codigo + " no patrimônio como \"" + novoCodigo + "\"...");
         this.setCodigo(novoCodigo);
     }
 

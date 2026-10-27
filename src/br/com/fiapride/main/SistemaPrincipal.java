@@ -2,12 +2,14 @@ package br.com.fiapride.main;
 
 import br.com.fiapride.model.Passageiro;
 import br.com.fiapride.model.Veiculo;
+import br.com.fiapride.model.Viagem;
 
 public class SistemaPrincipal {
 
     public static void main(String[] args) {
         demonstrarPassageiros();
         demonstrarVeiculos();
+        demonstrarViagem();
     }
 
     /** Aulas 1 a 4: objetos, métodos com validação, encapsulamento e construtores. */
@@ -44,5 +46,26 @@ public class SistemaPrincipal {
         corolla.atualizarPlaca("");     // recusado: placa vazia
 
         System.out.println("Veículo: " + corolla.getModelo() + " | Placa: " + corolla.getPlaca());
+    }
+
+    /** Aula 5: a viagem TEM UM passageiro e TEM UM veículo, e usa o comportamento deles. */
+    private static void demonstrarViagem() {
+        System.out.println();
+        System.out.println("=== FIAPRIDE: Viagens ===");
+
+        Passageiro ana = new Passageiro("Ana Silva", 20.0);
+        Veiculo corolla = new Veiculo("ABC-1234", "Toyota Corolla");
+
+        Viagem viagemDaAna = new Viagem("Av. Paulista", ana, corolla);
+
+        // Passagem por referência: a viagem aponta para o MESMO objeto ana, e não para uma cópia.
+        ana.adicionarSaldo(30.0);
+        System.out.println("Saldo visto pela viagem: R$ " + viagemDaAna.getSolicitante().getSaldo());
+
+        viagemDaAna.finalizar(35.0);    // cobra da Ana pelo próprio objeto Passageiro
+        viagemDaAna.exibirResumo();
+
+        Viagem viagemCara = new Viagem("Aeroporto de Guarulhos", ana, corolla);
+        viagemCara.finalizar(120.0);    // recusado: saldo insuficiente
     }
 }
