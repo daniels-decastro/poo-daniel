@@ -3,11 +3,23 @@ package br.com.fiapride.model;
 /**
  * Passageiro do FiapRide.
  * Atributos privados: ninguém de fora altera o saldo sem passar pelas regras.
+ * Construtores: todo passageiro nasce com nome válido e saldo nunca negativo.
  */
 public class Passageiro {
 
     private String nome;
     private double saldo;
+
+    /** Cadastro comum: o passageiro começa sem créditos. Delega para o construtor completo com this(). */
+    public Passageiro(String nome) {
+        this(nome, 0.0);
+    }
+
+    /** Cadastro com crédito inicial (por exemplo, um bônus de boas-vindas). */
+    public Passageiro(String nome, double saldoInicial) {
+        this.setNome(nome);
+        this.setSaldo(saldoInicial);
+    }
 
     /** Recarrega créditos. Valor zero ou negativo não é recarga. */
     public void adicionarSaldo(double valor) {
@@ -46,8 +58,8 @@ public class Passageiro {
         return this.saldo;
     }
 
-    /** Público por enquanto: é a única forma de registrar o nome enquanto não existe construtor. */
-    public void setNome(String nome) {
+    /** Agora privado: o nome é definido no nascimento do objeto, pelo construtor. */
+    private void setNome(String nome) {
         if (nome == null || nome.trim().isEmpty()) {
             System.out.println("Erro de validação: o nome do passageiro não pode ser vazio.");
             return;
