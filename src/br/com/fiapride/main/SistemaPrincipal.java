@@ -1,5 +1,7 @@
 package br.com.fiapride.main;
 
+import br.com.fiapride.model.Carro;
+import br.com.fiapride.model.Moto;
 import br.com.fiapride.model.Passageiro;
 import br.com.fiapride.model.Veiculo;
 import br.com.fiapride.model.Viagem;
@@ -10,6 +12,7 @@ public class SistemaPrincipal {
         demonstrarPassageiros();
         demonstrarVeiculos();
         demonstrarViagem();
+        demonstrarHeranca();
     }
 
     /** Aulas 1 a 4: objetos, métodos com validação, encapsulamento e construtores. */
@@ -67,5 +70,27 @@ public class SistemaPrincipal {
 
         Viagem viagemCara = new Viagem("Aeroporto de Guarulhos", ana, corolla);
         viagemCara.finalizar(120.0);    // recusado: saldo insuficiente
+    }
+
+    /** Aula 6: Carro e Moto herdam de Veiculo e a Viagem aceita qualquer filha. */
+    private static void demonstrarHeranca() {
+        System.out.println();
+        System.out.println("=== FIAPRIDE: Herança ===");
+
+        Carro civic = new Carro("CAR-1111", "Honda Civic", 4);
+        Moto cg = new Moto("MOT-2222", "Honda CG 160", false);
+        Carro carroLotado = new Carro("CAR-3333", "Fiat Uno", 12);   // recusado: capacidade inválida
+
+        civic.atualizarPlaca("BRA3F45");    // método herdado da mãe
+        System.out.println("Carro: " + civic.getModelo() + " | Placa: " + civic.getPlaca()
+                + " | Lugares: " + civic.getCapacidadePassageiros());
+        System.out.println("Moto: " + cg.getModelo() + " | Placa: " + cg.getPlaca() + " | Elétrica? " + cg.isEletrica());
+        System.out.println("Lugares registrados no Uno após a validação: " + carroLotado.getCapacidadePassageiros());
+
+        // A Viagem pede um Veiculo, então aceita Carro e Moto sem nenhuma mudança na classe Viagem.
+        Passageiro bruno = new Passageiro("Bruno Lima", 40.0);
+        Viagem viagemDeMoto = new Viagem("Vila Madalena", bruno, cg);
+        viagemDeMoto.finalizar(18.0);
+        viagemDeMoto.exibirResumo();
     }
 }
